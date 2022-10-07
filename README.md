@@ -33,9 +33,9 @@ Day 1:
 
 Day 2: 
 - Hour 1 
-  -	Review of ARDs – Ellis 
+  -	Review of ARDs – Christina 
   -	Value of proposition 
-  -	Review of homework 
+  -	Review of homework - Ellis 
 -	Hour 2
   -	Tfrmt – Christina 
   -	Follow-along 
