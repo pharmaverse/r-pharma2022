@@ -6,7 +6,7 @@ library(safetyData)
 library(mvtnorm)
 set.seed(1234)
 
-# dm ----------------------------------------------------------------------
+# Start DM ----
 
 country_count <- rpois(8, 39)
 tot <- sum(country_count)
@@ -75,7 +75,7 @@ temp_dm <- tibble(
   ) %>%
   ungroup()
 
-# Make TV (trial Visits) to figure out how the trial is designed
+# Make TV ----
 total_days <- 84
 tv <- tibble(
   STUDYID = "GSK123456",
@@ -86,7 +86,7 @@ tv <- tibble(
   mutate(VISITNUM = row_number())
 
 
-# Make SV
+# Make SV ----
 start_org <- dmy("1/1/2020")
 start_date <- start_org + days(round(runif(tot, 1, 350)))
 
@@ -113,7 +113,7 @@ sv <- temp_dm %>%
 
 
 
-# Finish off DM
+# Finish off DM ----
 dm <- sv %>%
   select(USUBJID, VISIT, SVSTDTC) %>%
   filter(VISIT %in% c("BASELINE", "WEEK 12")) %>%
@@ -131,7 +131,7 @@ dm <- sv %>%
 
 
 
-# Make EX
+# Make EX ----
 ex <- sv %>%
   select(STUDYID, USUBJID, VISIT, VISITNUM, VISITDY, EXSTDTC = SVSTDTC) %>%
   left_join(select(dm, USUBJID, EXTRT = ACTARM), by = "USUBJID") %>%
@@ -159,7 +159,7 @@ ex <- sv %>%
   )
 
 
-# Make VS
+# Make VS ----
 vs_tests <- tribble(
   ~VSTEST, ~VSPOS, ~VSTPT, ~VSTPTREF, ~VSORRESU, ~VSTESTCD,
   "Diastolic Blood Pressure", "SUPINE", "AFTER LYING DOWN FOR 5 MINUTES", "PATIENT SUPINE", "mmHg", "DIABP",
@@ -228,7 +228,7 @@ vs <- sv %>%
 
 
 
-# Make AE
+# Make AE ----
 ae_to_sample <- sdtm_ae %>%
   filter(AESDTH == "N") %>%
   distinct(AEBODSYS, AETERM, AELLT) %>%
@@ -265,7 +265,7 @@ ae <- dm %>%
   mutate(AESEQ = row_number()) %>%
   ungroup()
 
-# MAke The AE SUPP
+# Make SUPPAE ----
 suppae <- ae %>%
   select(STUDYID, RDOMAIN = DOMAIN, USUBJID, IDVARVAL = AESEQ, AETERM, AESEV) %>%
   mutate(
@@ -282,7 +282,7 @@ suppae <- ae %>%
   ) %>%
   select(-AETERM, -AESEV)
 
-# Make RE
+# Make RE ----
 retest <- tribble(
   ~RETESTCD, ~RETEST, ~REORRESU,
   "FEV1", "FEV1 (L)", "L",
