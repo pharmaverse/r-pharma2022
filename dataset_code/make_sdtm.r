@@ -218,6 +218,9 @@ vs <- sv %>%
       SEX == "F" & VSTESTCD == "WEIGHT" ~ VSORRES - 2,
       TRUE ~ VSORRES
     ),
+    VSORRES = sprintf("%.1f", VSORRES),
+    VSSTRESC = VSORRES,
+    VSSTRESN = as.numeric(VSORRES),
     VSBLFL = if_else(VISIT == "BASELINE", "Y", NA_character_),
     DOMAIN = "VS"
   ) %>%
@@ -344,7 +347,7 @@ all_pp_fmt <- all_pp %>%
 
 re <- vs %>%
   filter(VSTESTCD == "HEIGHT") %>%
-  select(USUBJID, HEIGHT = VSORRES) %>%
+  select(USUBJID, HEIGHT = VSSTRESN) %>%
   distinct() %>%
   left_join(select(
     dm, USUBJID, ARMCD,
