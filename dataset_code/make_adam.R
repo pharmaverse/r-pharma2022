@@ -37,9 +37,9 @@ adsl_decode <- adsl_pred %>%
 
 adsl_bl <- vs %>%
   filter(VSTESTCD %in% c("HEIGHT", "WEIGHT") & VSBLFL == "Y") %>%
-  select(USUBJID, VSTESTCD, VSORRES) %>%
+  select(USUBJID, VSTESTCD, VSSTRESN) %>%
   mutate(VSTESTCD = paste0(VSTESTCD, "BL")) %>%
-  pivot_wider(names_from = VSTESTCD, values_from = VSORRES) %>%
+  pivot_wider(names_from = VSTESTCD, values_from = VSSTRESN) %>%
   mutate(BMIBL = compute_bmi(HEIGHTBL, WEIGHTBL)) %>%
   right_join(adsl_decode, by = "USUBJID")
 
