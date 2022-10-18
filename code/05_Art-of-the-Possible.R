@@ -218,7 +218,6 @@ primary_results_tfrmt <- primary_results_tfrmt %>%
         visit = c(`Week 4`, `Week 8`, `Week 12`),
         trt = c(`Placebo`,`GSK123456 100 mg`)
       ),
-      -pfts,
       -starts_with("ord")
     )
   )
@@ -339,4 +338,79 @@ primary_gt_alt_styled %>%
   gtsave(
     "Primary_Results.docx"
   )
+
+# MOCKS! ----------------------------------------------------------------------
+
+# Not only does tfrmt allow you to define your tables ahead of time, you can
+# define your mocks as well
+
+## provide scaffolding for the data, you can start with
+## "Real" data
+mock_primary_gt <- print_mock_gt(
+  primary_results_tfrmt,
+  primary_tbl %>% select(-value)
+)
+
+## Generate data that in general should contain rows/column values ----
+
+# what are the expected columns
+columns <- crossing(
+  trt = c("Placebo","GSK123456 100 mg"),
+  visit = c("Week 4", "Week 8", "Week 12")
+)
+
+# Construct model esimates section of table
+model_ests <- tibble(
+  model_results_category = c("Model Estimates"),
+  measure = c("Adjusted Mean","(SE)"),
+  param = c("estimate","std.error"),
+  ord1 = c(1,2)
+  ) %>%
+  crossing(
+    columns
+  )
+
+# Construct model contrasts section of table
+model_contrasts <- tibble(
+    model_results_category = c("Contrast"),
+    measure = c("Difference","95% CI [high, low]","95% CI [high, low]","p-value"),
+    param = c("estimate","conf.low","conf.high","p.value"),
+    ord1 = c(3,4,4,5)
+  ) %>%
+  crossing(
+    columns %>%
+      filter(
+        trt == "GSK123456 100 mg"
+      )
+  )
+
+# Construct "big n" param section to indicate where big n will be
+# recorded (at the column label level)
+big_n <-  tibble(
+  param = c("big_n")
+  ) %>%
+  crossing(
+    columns
+  )
+
+mock_dat <- bind_rows(
+  model_ests,
+  model_contrasts,
+  big_n
+)
+
+mock_primary_gt <- print_mock_gt(
+  primary_results_tfrmt,
+  mock_dat
+)
+
+
+## let tfrmt guess ----
+
+# tfrmt can take a guess based on provided tfrmt
+# this is likely off, but can give you a quick view
+# for basic tables.
+
+print_mock_gt(primary_results_tfrmt)
+
 

@@ -154,7 +154,6 @@ stats_dat <- adpft %>%
 big_n_visit <- stats_dat %>%
   group_by(TRTA, VISIT) %>%
   summarize(
-    pfts = NA_character_,
     visit = stringr::str_to_sentence(unique(VISIT)),
     trt = unique(TRTA),
     param = "big_n",
@@ -183,7 +182,6 @@ emm_diff_tidy <- tidy(emm_diff, conf.int = TRUE)
 
 result_tidy <- bind_rows(emm_tidy, emm_diff_tidy) %>%
   mutate(
-    pfts = "FEV1 (L)",
     TRTA = coalesce(TRTA, contrast),
     contrast_yn = ifelse(!is.na(contrast), "y", "n")
   ) %>%
@@ -227,7 +225,7 @@ result_tidy <- bind_rows(emm_tidy, emm_diff_tidy) %>%
       measure == "p-value" ~ 5
     )
   ) %>%
-  select(trt, pfts, visit, model_results_category, measure, pfts, param, value, ord1) %>%
+  select(trt, visit, model_results_category, measure, param, value, ord1) %>%
   bind_rows(big_n_visit)
 
 
