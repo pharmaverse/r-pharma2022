@@ -26,19 +26,20 @@ Day 1:
 -	Hour 3 
   -	15 min break 
   -	Exercise to build an ADaM
--	Hour 4 – ARDs, but very fast 
+-	Hour 4 – ARDs, but very fast and seceret 
   -	Tplyr – Christina 
-  -	Follow-along 
+  -	Follow-along - make demog summaries 
 -	Homework exercise – Christina 
+  - make pft ard 
 
 Day 2: 
 - Hour 1 
-  -	Review of ARDs – Christina 
-  -	Value of proposition 
+  -	Intro to ARDs – Christina 
+    -	Value of proposition 
   -	Review of homework - Ellis 
 -	Hour 2
   -	Tfrmt – Christina 
-  -	Follow-along 
+  -	Follow-along - basic table + demog table? 
   -	Use a template to create some mocks  
 -	Hour 3
   -	15 min break 
@@ -48,6 +49,7 @@ Day 2:
 -	Hour 4
   -	Art of the possible -30 min – Ellis 
   -	Follow-along 
+    - Mocks for demog
   -	Close out review of all the things, - 30 min 
   -	Next steps 
   -	How to get involved etc… 
