@@ -17,20 +17,20 @@ Day 1:
 - Hour 1 
   -	Background – 15 min – Ellis 
   -	Study information – 15 min – Ellis  
-  -	Metacore/metatools – 20 min – Christina 
+  -	Metacore/metatools – 20 min – Christina 01
     -	Follow-along 
 -	Hour 2 
   -	Admiral 
-  -	Follow-along 
+  -	Follow-along 02/03
   -	Include writing out with xportr 
 -	Hour 3 
   -	15 min break 
-  -	Exercise to build an ADaM
+  -	Exercise to build an ADaM 04
 -	Hour 4 – ARDs, but very fast and seceret 
   -	Tplyr – Christina 
-  -	Follow-along - make demog summaries 
+  -	Follow-along - make demog summaries 05
 -	Homework exercise – Christina 
-  - make pft ard 
+  - make ae ard 06
 
 Day 2: 
 - Hour 1 
@@ -39,11 +39,11 @@ Day 2:
   -	Review of homework - Ellis 
 -	Hour 2
   -	Tfrmt – Christina 
-  -	Follow-along - basic table + demog table? 
+  -	Follow-along - basic table 08 + demog table? 09
   -	Use a template to create some mocks  
 -	Hour 3
   -	15 min break 
-  -	Tfmrt exercise 
+  -	Tfmrt exercise 10
     -	Christina presents the question 
     -	Ellis do the answers 
 -	Hour 4
