@@ -4,7 +4,7 @@ library(lubridate)
 library(xportr)
 library(safetyData)
 library(mvtnorm)
-set.seed(1234)
+set.seed(99)
 
 # Start DM ----
 
@@ -267,12 +267,12 @@ ae <- dm %>%
 
 # Make SUPPAE ----
 suppae <- ae %>%
-  select(STUDYID, RDOMAIN = DOMAIN, USUBJID, IDVARVAL = AESEQ, AETERM, AESEV) %>%
+  select(STUDYID, RDOMAIN = DOMAIN, USUBJID, IDVARVAL = AESEQ, AEBODSYS, AESEV) %>%
   mutate(
     QNAM = "AESPROT",
     QLABEL = "Protocol Specified Event",
     QVAL = if_else(AESEV != "MILD" &
-      AETERM %in% c("COUGH", "RALES", "DYSPNOEA"),
+      AEBODSYS == "RESPIRATORY, THORACIC AND MEDIASTINAL DISORDERS",
     "Y",
     "N"
     ),
@@ -280,7 +280,7 @@ suppae <- ae %>%
     QEVAL = "CLINICAL STUDY SPONSOR",
     IDVAR = "AESEQ"
   ) %>%
-  select(-AETERM, -AESEV)
+  select(-AEBODSYS, -AESEV)
 
 # Make RE ----
 retest <- tribble(
