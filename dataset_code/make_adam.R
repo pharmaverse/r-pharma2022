@@ -17,6 +17,18 @@ ae <- read_xpt("datasets/SDTM/ae.xpt")
 suppae <- read_xpt("datasets/SDTM/suppae.xpt")
 re <- read_xpt("datasets/SDTM/re.xpt")
 
+# SDTM pre-processing
+ae_dt <- ae %>%
+  derive_vars_dt("AEST", AESTDTC) %>%
+  derive_vars_dt("AEEN", AEENDTC)
+
+ex_dt <- ex %>%
+  derive_vars_dt("EXST", EXSTDTC) %>%
+  derive_vars_dt("EXEN", EXENDTC)
+
+vs_dt <- vs %>%
+  derive_vars_dt("VS", VSDTC)
+
 # ADSL --------------------------------------------------------------------
 adsl_spec <- metacore %>%
   select_dataset("ADSL")
@@ -72,7 +84,7 @@ adsl_ex <- adsl_bl %>%
   )
 
 # Safety Flag
-adsl <- adsl_ex %>%
+adsl_saff <- adsl_ex %>%
   derive_var_merged_exist_flag(
     dataset_add = ex,
     by_vars = vars(STUDYID, USUBJID),
@@ -87,7 +99,64 @@ adsl <- adsl_ex %>%
   ) %>%
   mutate(RANDFL = if_else(ACTARMCD %in% c("P", "A"), "Y", NA_character_))
 
-adsl <- adsl %>%
+# Last Date Known Alive
+ae_start_src <- date_source(
+  dataset_name = "ae",
+  date = AESTDT,
+  traceability_vars = vars(
+    LALVDOM = "AE",
+    LALVSEQ = AESEQ,
+    LALVVAR = "AESTDTC"
+  )
+)
+ae_end_src <- date_source(
+  dataset_name = "ae",
+  date = AEENDT,
+  traceability_vars = vars(
+    LALVDOM = "AE",
+    LALVSEQ = AESEQ,
+    LALVVAR = "AEENDTC"
+  )
+)
+
+ex_start_src <- date_source(
+  dataset_name = "ex",
+  date = EXSTDT,
+  traceability_vars = vars(
+    LALVDOM = "EX",
+    LALVSEQ = EXSEQ,
+    LALVVAR = "EXSTDTC"
+  )
+)
+ex_end_src <- date_source(
+  dataset_name = "ex",
+  date = EXENDT,
+  traceability_vars = vars(
+    LALVDOM = "EX",
+    LALVSEQ = EXSEQ,
+    LALVVAR = "EXENDTC"
+  )
+)
+
+adsl_dt_src <- date_source(
+  dataset_name = "adsl",
+  date = TRTEDTM,
+  traceability_vars = vars(
+    LALVDOM = "ADSL",
+    LALVSEQ = NA,
+    LALVVAR = "TRTEDTM"
+  )
+)
+
+adsl_lstalvdt <- adsl_saff %>%
+  derive_var_extreme_dt(
+    new_var = LSTALVDT,
+    ae_start_src, ae_end_src, ex_start_src, ex_end_src, adsl_dt_src,
+    source_datasets = list(ae = ae_dt, ex = ex_dt, adsl = adsl_saff),
+    mode = "last"
+  )
+
+adsl <- adsl_lstalvdt %>%
   order_cols(adsl_spec) %>%
   set_variable_labels(adsl_spec) %>%
   check_ct_data(adsl_spec) %>%
