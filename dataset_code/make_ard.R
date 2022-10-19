@@ -14,105 +14,46 @@ adpft <- read_xpt("datasets/ADAM/adpft.xpt") %>%
   mutate(VISIT = factor(VISIT, levels = c("BASELINE", "WEEK 4", "WEEK 8", "WEEK 12")))
 
 # Demog -------------------------------------------------------------------
-demog <- adsl %>%
-  tplyr_table(TRT01P, where= SAFFL =="Y") %>%
-  add_total_group() %>%
+demog <- demog <- adsl %>% 
+  tplyr_table(TRT01A, where= SAFFL =="Y") %>%
+  add_total_group() %>% 
   add_layer(
-    group_count(SEX, vars("Sex", "n (%)"))
+    group_count(target_var = SEX, by = vars("Sex n (%)"))
+  ) %>% 
+  add_layer(
+    group_desc(target_var = AGE, by = "Age (years)")
+  )  %>%
+  add_layer(
+    group_count(target_var = AGEGR1, by = vars("Age (years)" ))
   ) %>%
   add_layer(
-    group_desc(AGE, by = "Age (years)")
+    group_count(target_var = RACE, by = vars("Race n (%)"))
   ) %>%
   add_layer(
-    group_count(AGEGR1, by = vars("Age (years)", "n (%)") )
+    group_desc(target_var = HEIGHTBL, by = "Height (cm)")
   ) %>%
   add_layer(
-    group_count(RACE, by = vars("Race", "n (%)"))
+    group_desc(target_var = WEIGHTBL, by = "Weight (kg)")
   ) %>%
-  add_layer(
-    group_count(ETHNIC, by = vars("Ethnicity", "n (%)"))
-  ) %>%
-  add_layer(
-    group_desc(HEIGHTBL, by = "Height (cm)")
-  ) %>%
-  add_layer(
-    group_desc(WEIGHTBL, by = "Weight (kg)")
-  ) %>%
-  add_layer(
-    group_desc(BMIBL, by = "BMI (kg/m^2)")
-  ) %>%
-  get_numeric_data()  %>%
-  mutate(row_label3 = if_else(row_label3 == "n (%)", row_label1, row_label3) %>%
-           str_to_title(),
-         row_label3 = str_indent_wrap(row_label3, width = 30, tab_width = 10) %>%
-           str_replace("\\\n", "\n    "),
-         value = if_else(param == "pct", value*100, value),
-         ord1 = case_when(row_label2 == "Sex" ~ 1,
-                          row_label2 == "Age (years)" ~ 2,
-                          row_label2 == "Race" ~ 3,
-                          row_label2 == "Ethnicity" ~ 4,
-                          row_label2 == "Height (cm)" ~ 5,
-                          row_label2 == "Weight (kg)" ~ 6,
-                          row_label2 == "BMI (kg/m^2)" ~ 7,
-                          ),
-         ord2 =  case_when(row_label3 == "n" ~ 1,
-                           row_label3 == "Mean (SD)" ~ 2,
-                           row_label3 == "Median" ~ 3,
-                           row_label3 == "Q1, Q3" ~ 4,
-                           row_label3 == "Min, Max" ~ 5,
-                           row_label3 == "Missing" ~ 6,
+  get_numeric_data()  %>% 
+  mutate(value = if_else(param == "pct", value*100, value),
+         ord1 = case_when(row_label2 == "Sex n (%)" ~ 1, 
+                          row_label2 == "Age (years)" ~ 2, 
+                          row_label2 == "Race n (%)" ~ 3, 
+                          row_label2 == "Ethnicity n (%)" ~ 4, 
+                          row_label2 == "Height (cm)" ~ 5, 
+                          row_label2 == "Weight (kg)" ~ 6, 
+                          row_label2 == "BMI (kg/m^2)" ~ 7, 
+                          ), 
+         ord2 =  case_when(row_label1 == "n" ~ 1, 
+                           row_label1 == "Mean (SD)" ~ 2, 
+                           row_label1 == "Median" ~ 3, 
+                           row_label1 == "Q1, Q3" ~ 4, 
+                           row_label1 == "Min, Max" ~ 5, 
+                           row_label1 == "Missing" ~ 6, 
                            TRUE ~ 7
-         )) %>%
-  select(-row_label1)
+         )) 
 
-# PFT Summary Stats -------------------------------------------------------
-pft <- adpft %>%
-  filter(PARAMCD != "FEV1PD") %>%
-  tplyr_table(TRTA, where= SAFFL =="Y") %>%
-  add_total_group() %>%
-  add_layer(
-    group_desc(AVAL, by=vars(PARAM, VISIT))
-  ) %>%
-  get_numeric_data() %>%
-  mutate(col1 = as.character(col1),
-         ord1 = case_when(row_label3 =="BASELINE" ~ 1,
-                          row_label3 =="WEEK 4"~ 2,
-                          row_label3 =="WEEK 8"~ 3,
-                          row_label3 =="WEEK 12"~ 4),
-         ord2 =  case_when(row_label4 == "n" ~ 1,
-                           row_label4 == "Mean (SD)" ~ 2,
-                           row_label4 == "Median" ~ 3,
-                           row_label4 == "Q1, Q3" ~ 4,
-                           row_label4 == "Min, Max" ~ 5,
-                           row_label4 == "Missing" ~ 6,
-                           TRUE ~ 7
-         ),
-         row_label3 = str_to_title(row_label3)) %>%
-  select(-row_label1)
-
-pft_chg <- adpft %>%
-  filter(PARAMCD != "FEV1PD") %>%
-  tplyr_table(TRTA, where= SAFFL =="Y") %>%
-  add_total_group() %>%
-  add_layer(
-    group_desc(CHG, by=vars(PARAM, VISIT))
-  ) %>%
-  get_numeric_data() %>%
-  filter(row_label3 != "BASELINE")  %>%
-  mutate(col1 = as.character(col1),
-         ord1 = case_when(row_label3 =="BASELINE" ~ 1,
-                          row_label3 =="WEEK 4"~ 2,
-                          row_label3 =="WEEK 8"~ 3,
-                          row_label3 =="WEEK 12"~ 4),
-         ord2 =  case_when(row_label4 == "n" ~ 1,
-                           row_label4 == "Mean (SD)" ~ 2,
-                           row_label4 == "Median" ~ 3,
-                           row_label4 == "Q1, Q3" ~ 4,
-                           row_label4 == "Min, Max" ~ 5,
-                           row_label4 == "Missing" ~ 6,
-                           TRUE ~ 7),
-         row_label3 = str_to_title(row_label3))%>%
-  select(-row_label1)
 
 # AE table ----------------------------------------------------------------
 ae <- tplyr_table(adae, TRT01A) %>%
@@ -235,8 +176,6 @@ result_tidy <- bind_rows(emm_tidy, emm_diff_tidy) %>%
 # Write data  -------------------------------------------------------------
 
 write_xpt(demog, "datasets/ARD/demog.xpt")
-write_xpt(pft, "datasets/ARD/pft.xpt")
-write_xpt(pft_chg, "datasets/ARD/pft_chg.xpt")
 write_xpt(ae, "datasets/ARD/ae.xpt")
 write_xpt(result_tidy, "datasets/ARD/model.xpt")
 
