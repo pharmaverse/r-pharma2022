@@ -248,7 +248,7 @@ ae <- dm %>%
   select(-n_ae, -id) %>%
   mutate(
     AESTDY = sample(0:(total_days - 1), nrow(.), replace = TRUE),
-    AESTDTC = RFSTDTC + days(AESTDY),
+    AESTDTC = as.character(RFSTDTC + days(AESTDY)),
     AEENDY = map_int(AESTDY, ~ sample(.:total_days, 1)),
     AESEV = sample(c("MILD", "MODERATE", "SEVERE"), nrow(.),
       replace = TRUE, c(0.7, 0.27, 0.03)
@@ -257,7 +257,7 @@ ae <- dm %>%
       replace = TRUE, prob = c(0.6, 0.4)
     ),
     AEENDY = if_else(AEOUT == "NOT RECOVERED/NOT RESOLVED", NA_integer_, AEENDY),
-    AEENDTC = RFSTDTC + days(AEENDY),
+    AEENDTC = as.character(RFSTDTC + days(AEENDY)),
     AESDTH = "N",
     DOMAIN = "AE"
   ) %>%
