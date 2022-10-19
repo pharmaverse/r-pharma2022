@@ -9,8 +9,8 @@ library(stringr)
 library(tidyr)
 
 adsl <- read_xpt("datasets/ADAM/adsl.xpt")
-adae <- read_xpt("datasets/ADAM/adae.xpt") 
-adpft <- read_xpt("datasets/ADAM/adpft.xpt") %>% 
+adae <- read_xpt("datasets/ADAM/adae.xpt")
+adpft <- read_xpt("datasets/ADAM/adpft.xpt") %>%
   mutate(VISIT = factor(VISIT, levels = c("BASELINE", "WEEK 4", "WEEK 8", "WEEK 12")))
 
 # Demog -------------------------------------------------------------------
@@ -54,19 +54,20 @@ demog <- demog <- adsl %>%
                            TRUE ~ 7
          )) 
 
+
 # AE table ----------------------------------------------------------------
 ae <- tplyr_table(adae, TRT01A) %>%
-  set_pop_data(adsl) %>% 
-  add_total_group() %>% 
+  set_pop_data(adsl) %>%
+  add_total_group() %>%
   add_layer(
-    group_count("Any Body System") %>% 
-      set_distinct_by(USUBJID) 
+    group_count("Any Body System") %>%
+      set_distinct_by(USUBJID)
   ) %>%
   add_layer(
-    group_count(target_var = vars(AEBODSYS, AETERM)) %>% 
-      set_distinct_by(USUBJID) 
-  )  %>% 
-  get_numeric_data() %>% 
+    group_count(target_var = vars(AEBODSYS, AETERM)) %>%
+      set_distinct_by(USUBJID)
+  )  %>%
+  get_numeric_data() %>%
   mutate(
     row_label2 = if_else(is.na(row_label2), row_label1, row_label2) %>%
       str_to_title(),
@@ -74,29 +75,45 @@ ae <- tplyr_table(adae, TRT01A) %>%
       str_to_title(),
     value = if_else(param == "distinct_pct", value*100, value),
     ord = row_number()
-  ) %>% 
-  group_by(row_label2) %>% 
-  mutate(ord1 = min(ord)) %>% 
-  group_by(row_label1) %>% 
-  mutate(ord2 = min(ord)) %>% 
-  ungroup() %>% 
+  ) %>%
+  group_by(row_label2) %>%
+  mutate(ord1 = min(ord)) %>%
+  group_by(row_label1) %>%
+  mutate(ord2 = min(ord)) %>%
+  ungroup() %>%
   select(-ord)
 
 
 # Stats -------------------------------------------------------------------
-adpft_mod <- adpft %>% 
-  filter(MITTFL == "Y",PARAMCD == "FEV1", VISITNUM > 2, TRTA != "Total") 
+
+
+stats_dat <- adpft %>%
+  filter(MITTFL == "Y",PARAMCD == "FEV1", VISITNUM > 2, TRTA != "Total") %>%
+  filter(!(VISIT == "WEEK 12" & USUBJID == "GSK123456-1110")) ## Drop random subject from week 12
+
+
+big_n_visit <- stats_dat %>%
+  group_by(TRTA, VISIT) %>%
+  summarize(
+    visit = stringr::str_to_sentence(unique(VISIT)),
+    trt = unique(TRTA),
+    param = "big_n",
+    value = length(unique(USUBJID)),
+    ord1 = NA_real_,
+    .groups = "drop"
+  ) %>%
+  select(-TRTA, -VISIT)
 
 # MMRM model
 mod <- gls(CHG ~ BASE + TRTA + VISIT + BASE:VISIT + TRTA:VISIT,
-           data = adpft_mod,
+           data = stats_dat,
            # unstructured covariance matrix
            correlation = corSymm(form = ~as.numeric(VISIT)|USUBJID), # unstructured corr matrix
            weights = varIdent(form = ~1|VISIT), # allow distinct variance for each visit
            na.action = "na.omit")
 
 # Extract lsmeans and contrasts
-emm <- mod %>% emmeans(~TRTA|VISIT)  
+emm <- mod %>% emmeans(~TRTA|VISIT)
 emm_diff <- emm %>% contrast(method = "pairwise", adjust = "none")
 
 
@@ -104,25 +121,54 @@ emm_diff <- emm %>% contrast(method = "pairwise", adjust = "none")
 emm_tidy <- tidy(emm)
 emm_diff_tidy <- tidy(emm_diff, conf.int = TRUE)
 
-result_tidy <- bind_rows(emm_tidy, emm_diff_tidy) %>% 
-  mutate(pfts = "FEV1 (L)",
-         span_col = coalesce(TRTA, contrast),
-         contrast_yn = ifelse(!is.na(contrast), "y", "n")) %>% 
-  pivot_longer(cols = where(is.numeric), names_to = "param", values_to = "value") %>% 
-  filter((contrast_yn=="y" & param %in% c("estimate", "conf.low", "conf.high", "p.value")) |
-           (contrast_yn=="n" & param %in% c("estimate", "std.error"))) %>% 
-  mutate(lower_col = case_when(
-    str_detect(param, "conf") ~ "[95% CI]",
-    str_detect(span_col, " - ") & param == "estimate" ~ "Difference",
-    param == "estimate" ~ "Adjusted Mean",
-    param == "std.error" ~ "(SE)",
-    param == "p.value" ~ "p-value"),
+result_tidy <- bind_rows(emm_tidy, emm_diff_tidy) %>%
+  mutate(
+    TRTA = coalesce(TRTA, contrast),
+    contrast_yn = ifelse(!is.na(contrast), "y", "n")
+  ) %>%
+  rename(
+    trt = TRTA,
+    visit = VISIT
+  ) %>%
+  pivot_longer(
+    cols = where(is.numeric),
+    names_to = "param",
+    values_to = "value"
+  ) %>%
+  filter(
+    (contrast_yn=="y" &
+       param %in% c("estimate", "conf.low", "conf.high", "p.value")) |
+    (contrast_yn=="n" &
+       param %in% c("estimate", "std.error"))
+  ) %>%
+  mutate(
+    measure = case_when(
+      str_detect(param, "conf") ~ "95% CI [high, low]",
+      str_detect(trt, " - ") & param == "estimate" ~ "Difference",
+      param == "estimate" ~ "Adjusted Mean",
+      param == "std.error" ~ "(SE)",
+      param == "p.value" ~ "p-value"
+    ),
+    trt = case_when(
+      str_detect(trt, " - ") ~ "GSK123456 100 mg",
+      TRUE ~ trt
+    ),
+    model_results_category = case_when(
+      measure %in% c("Adjusted Mean", "(SE)") ~ "Model Estimates",
+      measure %in% c("Difference","95% CI [high, low]", "p-value") ~ "Contrast"
+    ),
+    visit = stringr::str_to_sentence(visit),
     ord1 = case_when(
-      VISIT == "WEEK 4" ~ 1,
-      VISIT == "WEEK 8" ~ 2,
-      VISIT == "WEEK 12" ~ 3
-    )) %>% 
-  select(pfts, VISIT, span_col, lower_col, param, value, ord1)
+      measure == "Adjusted Mean" ~ 1,
+      measure == "(SE)" ~ 2,
+      measure == "Difference" ~ 3,
+      measure == "95% CI [high, low]" ~ 4,
+      measure == "p-value" ~ 5
+    )
+  ) %>%
+  select(trt, visit, model_results_category, measure, param, value, ord1) %>%
+  bind_rows(big_n_visit)
+
 
 
 
@@ -130,7 +176,6 @@ result_tidy <- bind_rows(emm_tidy, emm_diff_tidy) %>%
 # Write data  -------------------------------------------------------------
 
 write_xpt(demog, "datasets/ARD/demog.xpt")
-write_xpt(pft, "datasets/ARD/pft.xpt")
 write_xpt(ae, "datasets/ARD/ae.xpt")
 write_xpt(result_tidy, "datasets/ARD/model.xpt")
 
