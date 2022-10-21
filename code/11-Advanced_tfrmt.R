@@ -8,7 +8,7 @@ library(gtExtras)
 
 # ARD Created
 primary_tbl <- read_xpt("datasets/ARD/model.xpt") %>%
-  mutate(across(everything(),function(x){x[x==""]<-NA;x}))
+  mutate(across(everything(),~na_if(.,"")))
 
 # Build a Primary Results Table ------------------------------------------------
 
@@ -24,7 +24,7 @@ primary_results_tfrmt <- tfrmt(
   column = c(visit, trt),
   param = param,
   value = value,
-  sorting_cols = ord1,
+  sorting_cols = ord1
 )
 
 # NOTE: Since we do not know which columns are actually in the data, if you
@@ -78,7 +78,7 @@ frmt_structure(
                conf.high = frmt("x.xxxx")
   ))
 
-primary_results_tfrmt <- primary_results_tfrmt %>%
+primary_results_tfrmt_bp <- primary_results_tfrmt %>%
   tfrmt(
     body_plan = body_plan(
 
@@ -115,11 +115,13 @@ primary_results_tfrmt <- primary_results_tfrmt %>%
       ## rounding to 4 decimals
       frmt_structure(
         group_val = "Contrast",
-        label_val = "95% CI [high, low]",
+        label_val = "95% CI [low, high]",
         frmt_combine("[{conf.low}, {conf.high}]", frmt("x.xxxx"))
       )
     )
   )
+
+print_to_gt(primary_results_tfrmt_bp, primary_tbl %>% filter(param != "big_n"))
 
 
 ## Define Body Plan - Conditional Formatting  ----------
@@ -151,7 +153,7 @@ apply_frmt(
 )
 
 
-primary_results_tfrmt <- primary_results_tfrmt %>%
+primary_results_tfrmt_bp2 <- primary_results_tfrmt_bp %>%
   tfrmt(
     body_plan = body_plan(
       ## For all groups and labels, conditionally format p.value such that
@@ -171,6 +173,8 @@ primary_results_tfrmt <- primary_results_tfrmt %>%
   )
 
 
+print_to_gt(primary_results_tfrmt_bp2, primary_tbl %>% filter(param != "big_n"))
+
 ## Define "Big N's" ----------------------------------------------------------
 
 # we know they are included in the ARD, so what are they?
@@ -179,7 +183,7 @@ primary_tbl %>%
   dplyr::filter(param == "big_n")
 
 
-primary_results_tfrmt <- primary_results_tfrmt %>%
+primary_results_tfrmt_big_n <- primary_results_tfrmt_bp2 %>%
   tfrmt(
     ## define "big N" dressings. Values from s
     big_n = big_n_structure(
@@ -187,6 +191,9 @@ primary_results_tfrmt <- primary_results_tfrmt %>%
       n_frmt = frmt("\n(N=XX)")
     )
   )
+
+print_to_gt(primary_results_tfrmt_big_n, primary_tbl)
+
 
 ## Define col_plan -----------------------------------------------------------
 
@@ -208,19 +215,22 @@ primary_tbl %>% filter(param != "big_n") %>% distinct(visit, trt)
 primary_tbl %>% colnames
 
 
-primary_results_tfrmt <- primary_results_tfrmt %>%
+primary_results_tfrmt_bp2_cp <- primary_results_tfrmt_big_n %>%
   tfrmt(
     ## Define order of columns
     col_plan = col_plan(
       model_results_category,
       measure,
       span_structure(
-        visit = c(`Week 4`, `Week 8`, `Week 12`),
+        visit = c(`Week 4`,`Week 8`, `Week 12`),
         trt = c(`Placebo`,`GSK123456 100 mg`)
       ),
       -starts_with("ord")
     )
   )
+
+print_to_gt(primary_results_tfrmt_bp2, primary_tbl %>% filter(param != "big_n"))
+print_to_gt(primary_results_tfrmt_bp2_cp, primary_tbl)
 
 
 ## Define Row Group Plan -----------------------------------------------------
@@ -236,13 +246,40 @@ primary_results_tfrmt <- primary_results_tfrmt %>%
 # set up a structure for blocking based on the groups
 # collapse the groups with label and indent
 
-primary_results_tfrmt <- primary_results_tfrmt %>%
+#default behavior
+primary_results_tfrmt_bp2_cp %>%
   tfrmt(
     row_grp_plan = row_grp_plan(
       label_loc = element_row_grp_loc(location = "indented")
     )
-  )
+  ) %>%
+  print_to_gt(primary_tbl)
 
+## Insert break beneath group
+primary_results_tfrmt_bp2_cp %>%
+  tfrmt(
+    row_grp_plan = row_grp_plan(
+      row_grp_structure(
+        group_val = "Model Estimates",
+        element_block(post_space = "")
+      ),
+      label_loc = element_row_grp_loc(location = "indented") #default behavior
+    )
+  ) %>%
+  print_to_gt(primary_tbl)
+
+## Add lines beneath group
+primary_results_tfrmt_bp2_cp %>%
+  tfrmt(
+    row_grp_plan = row_grp_plan(
+      row_grp_structure(
+        group_val = "Model Estimates",
+        element_block(post_space = "-")
+      ),
+      label_loc = element_row_grp_loc(location = "indented") #default behavior
+    )
+  ) %>%
+  print_to_gt(primary_tbl)
 
 ## Define footnote plan -----------------------------------------------------
 
@@ -257,7 +294,7 @@ primary_results_tfrmt <- primary_results_tfrmt %>%
 # set up a structure for blocking based on the groups
 # collapse the groups with label and indent
 
-primary_results_tfrmt <- primary_results_tfrmt %>%
+primary_results_tfrmt_bp2_cp_fn <- primary_results_tfrmt_bp2_cp %>%
   tfrmt(
     footnote_plan = footnote_plan(
       footnote_structure(
@@ -270,8 +307,13 @@ primary_results_tfrmt <- primary_results_tfrmt %>%
         label_val = list(measure = "p-value")
       ),
       footnote_structure(
+        "Special footnote to demo calling out a column",
+        column_val = list(visit = "Week 8", trt = "GSK123456 100 mg")
+      ),
+      footnote_structure(
         "Special footnote to demo calling out a value",
-        column_val = list(visit = "Week 12")
+        column_val = list(visit = "Week 12", trt = "GSK123456 100 mg"),
+        label_val = list(measure = "p-value")
       )
     )
   )
@@ -280,14 +322,16 @@ primary_results_tfrmt <- primary_results_tfrmt %>%
 
 # Generate Table ------------------
 
-primary_gt <- print_to_gt(primary_results_tfrmt, primary_tbl)
+primary_gt <- print_to_gt(primary_results_tfrmt_bp2_cp_fn, primary_tbl)
+
+primary_gt
 
 ## New Body Plan Components-------------------------------------------
 
 ### Apply additional styling as needed, say for using scientific notation for
 ### small p-values
 
-primary_results_tfrmt_alt <- primary_results_tfrmt %>%
+primary_results_tfrmt_alt <- primary_results_tfrmt_bp2_cp_fn %>%
   tfrmt(
   # new formatting for p-values
   body_plan = body_plan(
@@ -306,7 +350,7 @@ primary_results_tfrmt_alt <- primary_results_tfrmt %>%
 
 primary_gt_alt <- print_to_gt(primary_results_tfrmt_alt, primary_tbl)
 
-
+primary_gt_alt
 
 ## Add styling as preferred
 primary_gt_alt_styled <- primary_gt_alt %>%
@@ -347,9 +391,11 @@ primary_gt_alt_styled %>%
 ## provide scaffolding for the data, you can start with
 ## "Real" data
 mock_primary_gt <- print_mock_gt(
-  primary_results_tfrmt,
+  primary_results_tfrmt_bp2_cp_fn,
   primary_tbl %>% select(-value)
 )
+
+mock_primary_gt
 
 ## Generate data that in general should contain rows/column values ----
 
@@ -399,11 +445,12 @@ mock_dat <- bind_rows(
   big_n
 )
 
-mock_primary_gt <- print_mock_gt(
-  primary_results_tfrmt,
+mock_primary_gt_mocked_dat <- print_mock_gt(
+  primary_results_tfrmt_bp2_cp_fn,
   mock_dat
 )
 
+mock_primary_gt_mocked_dat
 
 ## let tfrmt guess ----
 
@@ -411,6 +458,7 @@ mock_primary_gt <- print_mock_gt(
 # this is likely off, but can give you a quick view
 # for basic tables.
 
-print_mock_gt(primary_results_tfrmt)
+primary_results_tfrmt_bp2_cp_fn %>%
+  print_mock_gt()
 
 

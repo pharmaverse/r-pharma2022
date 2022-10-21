@@ -14,12 +14,12 @@ adpft <- read_xpt("datasets/ADAM/adpft.xpt") %>%
   mutate(VISIT = factor(VISIT, levels = c("BASELINE", "WEEK 4", "WEEK 8", "WEEK 12")))
 
 # Demog -------------------------------------------------------------------
-demog <- demog <- adsl %>% 
+demog <- demog <- adsl %>%
   tplyr_table(TRT01A, where= SAFFL =="Y") %>%
-  add_total_group() %>% 
+  add_total_group() %>%
   add_layer(
     group_count(target_var = SEX, by = vars("Sex n (%)"))
-  ) %>% 
+  ) %>%
   add_layer(
     group_desc(target_var = AGE, by = "Age (years)")
   )  %>%
@@ -35,24 +35,24 @@ demog <- demog <- adsl %>%
   add_layer(
     group_desc(target_var = WEIGHTBL, by = "Weight (kg)")
   ) %>%
-  get_numeric_data()  %>% 
+  get_numeric_data()  %>%
   mutate(value = if_else(param == "pct", value*100, value),
-         ord1 = case_when(row_label2 == "Sex n (%)" ~ 1, 
-                          row_label2 == "Age (years)" ~ 2, 
-                          row_label2 == "Race n (%)" ~ 3, 
-                          row_label2 == "Ethnicity n (%)" ~ 4, 
-                          row_label2 == "Height (cm)" ~ 5, 
-                          row_label2 == "Weight (kg)" ~ 6, 
-                          row_label2 == "BMI (kg/m^2)" ~ 7, 
-                          ), 
-         ord2 =  case_when(row_label1 == "n" ~ 1, 
-                           row_label1 == "Mean (SD)" ~ 2, 
-                           row_label1 == "Median" ~ 3, 
-                           row_label1 == "Q1, Q3" ~ 4, 
-                           row_label1 == "Min, Max" ~ 5, 
-                           row_label1 == "Missing" ~ 6, 
+         ord1 = case_when(row_label2 == "Sex n (%)" ~ 1,
+                          row_label2 == "Age (years)" ~ 2,
+                          row_label2 == "Race n (%)" ~ 3,
+                          row_label2 == "Ethnicity n (%)" ~ 4,
+                          row_label2 == "Height (cm)" ~ 5,
+                          row_label2 == "Weight (kg)" ~ 6,
+                          row_label2 == "BMI (kg/m^2)" ~ 7,
+                          ),
+         ord2 =  case_when(row_label1 == "n" ~ 1,
+                           row_label1 == "Mean (SD)" ~ 2,
+                           row_label1 == "Median" ~ 3,
+                           row_label1 == "Q1, Q3" ~ 4,
+                           row_label1 == "Min, Max" ~ 5,
+                           row_label1 == "Missing" ~ 6,
                            TRUE ~ 7
-         )) 
+         ))
 
 
 # AE table ----------------------------------------------------------------
@@ -143,7 +143,7 @@ result_tidy <- bind_rows(emm_tidy, emm_diff_tidy) %>%
   ) %>%
   mutate(
     measure = case_when(
-      str_detect(param, "conf") ~ "95% CI [high, low]",
+      str_detect(param, "conf") ~ "95% CI [low, high]",
       str_detect(trt, " - ") & param == "estimate" ~ "Difference",
       param == "estimate" ~ "Adjusted Mean",
       param == "std.error" ~ "(SE)",
@@ -155,14 +155,14 @@ result_tidy <- bind_rows(emm_tidy, emm_diff_tidy) %>%
     ),
     model_results_category = case_when(
       measure %in% c("Adjusted Mean", "(SE)") ~ "Model Estimates",
-      measure %in% c("Difference","95% CI [high, low]", "p-value") ~ "Contrast"
+      measure %in% c("Difference","95% CI [low, high]", "p-value") ~ "Contrast"
     ),
     visit = stringr::str_to_sentence(visit),
     ord1 = case_when(
       measure == "Adjusted Mean" ~ 1,
       measure == "(SE)" ~ 2,
       measure == "Difference" ~ 3,
-      measure == "95% CI [high, low]" ~ 4,
+      measure == "95% CI [low, high]" ~ 4,
       measure == "p-value" ~ 5
     )
   ) %>%
