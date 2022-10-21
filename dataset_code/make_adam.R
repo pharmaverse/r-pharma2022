@@ -26,9 +26,6 @@ ex_dt <- ex %>%
   derive_vars_dt("EXST", EXSTDTC) %>%
   derive_vars_dt("EXEN", EXENDTC)
 
-vs_dt <- vs %>%
-  derive_vars_dt("VS", VSDTC)
-
 # ADSL --------------------------------------------------------------------
 adsl_spec <- metacore %>%
   select_dataset("ADSL")
