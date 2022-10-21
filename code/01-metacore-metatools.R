@@ -29,11 +29,14 @@ check_variables(adsl_pred, adsl_spec)
 get_control_term(adsl_spec, SEXN)
 
 adsl_pred %>%  
-  create_var_from_codelist(adsl_spec, SEX, SEXN)
+  create_var_from_codelist(adsl_spec, SEX, SEXN) %>% 
+  select(USUBJID, SEX, SEXN)
 
 adsl_decode <- adsl_pred %>%  
   create_var_from_codelist(adsl_spec, SEX, SEXN) %>% 
   create_var_from_codelist(adsl_spec, ETHNIC, ETHNICN) %>% 
+  create_var_from_codelist(adsl_spec, RACE, RACEN) %>% 
+  create_var_from_codelist(adsl_spec, COUNTRY, ACOUNTRY) %>%
   create_var_from_codelist(adsl_spec, ARMCD, TRT01PN) %>% 
   create_var_from_codelist(adsl_spec, ACTARMCD, TRT01AN) %>%
   create_var_from_codelist(adsl_spec, ARMCD, TRT01P) %>% 
