@@ -49,6 +49,7 @@ adsl_bl <- adsl_decode %>%
     filter = VSTESTCD %in% c("HEIGHT", "WEIGHT") & VSBLFL == "Y"
   ) %>%
   rename(HEIGHTBL = HEIGHT, WEIGHTBL = WEIGHT) %>%
+  select(-VSBLFL) %>%
   mutate(BMIBL = compute_bmi(HEIGHTBL, WEIGHTBL))
 
 
