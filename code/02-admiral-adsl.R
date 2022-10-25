@@ -4,6 +4,7 @@ library(tidyverse)
 library(admiral)
 library(haven)
 library(metatools)
+library(xportr)
 
 # Read in the metadata ----
 metacore <- spec_to_metacore("specs/specs.xlsx", where_sep_sheet = FALSE)
