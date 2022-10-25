@@ -6,6 +6,8 @@ library(haven)
 library(metatools)
 library(xportr)
 
+source("code/01-metacore-metatools.R")
+
 # Read in the metadata ----
 metacore <- spec_to_metacore("specs/specs.xlsx", where_sep_sheet = FALSE)
 
