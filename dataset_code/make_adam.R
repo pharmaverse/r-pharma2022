@@ -53,27 +53,25 @@ adsl_bl <- vs %>%
   right_join(adsl_decode, by = "USUBJID")
 
 adsl_ex <- adsl_bl %>%
-  derive_vars_merged_dtm(
+  derive_vars_merged_dt(
     dataset_add = ex,
     filter_add = (EXDOSE > 0 |
       (EXDOSE == 0 &
         str_detect(EXTRT, "PLACEBO"))) & nchar(EXSTDTC) >= 10,
     new_vars_prefix = "TRTS",
     dtc = EXSTDTC,
-    time_imputation = "FIRST",
-    order = vars(TRTSDTM, EXSEQ),
+    order = vars(TRTSDT, EXSEQ),
     mode = "first",
     by_vars = vars(STUDYID, USUBJID),
     flag_imputation = "none"
   ) %>%
-  derive_vars_merged_dtm(
+  derive_vars_merged_dt(
     dataset_add = ex,
     filter_add = (EXDOSE > 0 |
       (EXDOSE == 0 &
         str_detect(EXTRT, "PLACEBO"))) & nchar(EXENDTC) >= 10,
     new_vars_prefix = "TRTE",
     dtc = EXENDTC,
-    time_imputation = "last",
     order = vars(EXSEQ),
     mode = "last",
     by_vars = vars(STUDYID, USUBJID),
@@ -137,11 +135,11 @@ ex_end_src <- date_source(
 
 adsl_dt_src <- date_source(
   dataset_name = "adsl",
-  date = TRTEDTM,
+  date = TRTEDT,
   traceability_vars = vars(
     LALVDOM = "ADSL",
     LALVSEQ = NA,
-    LALVVAR = "TRTEDTM"
+    LALVVAR = "TRTEDT"
   )
 )
 
