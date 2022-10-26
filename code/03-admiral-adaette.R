@@ -69,7 +69,7 @@ adaette_cardiac <- derive_param_tte(
   )
 )
 
-adaette_aval <- bind_rows(adaette_any_ae, adaette_nausea) %>%
+adaette_aval <- bind_rows(adaette_any_ae, adaette_cardiac) %>%
   derive_vars_duration(
     new_var = AVAL,
     new_var_unit = AVALU,
