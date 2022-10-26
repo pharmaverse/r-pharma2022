@@ -16,7 +16,11 @@ In this 2-day workshop you will be working with the Tidyverse and the first gene
 
 ### Packages that are covered:
 
-<img src="https://github.com/atorus-research/metacore/raw/main/man/figures/metacore.PNG" style="width:30;"/> {metacore} <img src="https://github.com/pharmaverse/metatools/raw/main/man/figures/metatools.png" style="width:30;"/> {metatools} <img src="https://github.com/atorus-research/xportr/raw/main/man/figures/logo.png" style="width:30;"/> {xportr} <img src="https://github.com/pharmaverse/admiral/raw/main/man/figures/logo.png" style="width:30;"/> {admiral} <img src="https://atorus-research.github.io/Tplyr/logo.png" style="width:30;"/> {Tplyr}<img src="https://github.com/GSK-Biostatistics/tfrmt/raw/main/man/figures/tfrmt.png" style="width:40;"/>{tfrmt}
+<a href='https://github.com/atorus-research/metacore'><img src="https://github.com/atorus-research/metacore/raw/main/man/figures/metacore.PNG" style="height:125px;"/></a>&emsp;&emsp;<a href='https://github.com/pharmaverse/metatools'><img src="https://github.com/pharmaverse/metatools/raw/main/man/figures/metatools.png" style="height:125px;"/></a>&emsp;&emsp;<a href='https://github.com/atorus-research/xportr'><img src="https://github.com/atorus-research/xportr/raw/main/man/figures/logo.png" style="height:125px;"/></a> &emsp;&ensp;
+<a href='https://github.com/pharmaverse/admiral'><img src="https://github.com/pharmaverse/admiral/raw/main/man/figures/logo.png" style="height:125px;"/></a>&ensp;
+<a href='https://github.com/atorus-research/Tplyr/'><img src="https://atorus-research.github.io/Tplyr/logo.png" style="height:125px;"/></a>
+ <a href='https://gsk-biostatistics.github.io/tfrmt/'><img src="https://github.com/GSK-Biostatistics/tfrmt/raw/main/man/figures/tfrmt.png" style="height:150px;"/></a>
+ 
 
 ### Outline
 
