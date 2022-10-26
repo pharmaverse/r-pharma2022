@@ -11,33 +11,16 @@ source("code/01-metacore-metatools.R")
 # Read in the metadata ----
 metacore <- spec_to_metacore("specs/specs.xlsx", where_sep_sheet = FALSE)
 
+# Get the specifications for the dataset we are currently building
+adsl_spec <- metacore %>%
+  select_dataset("ADSL")
+
 # Read the data in ----
 dm <- read_xpt("datasets/SDTM/dm.xpt")
 vs <- read_xpt("datasets/SDTM/vs.xpt")
 ex <- read_xpt("datasets/SDTM/ex.xpt")
 sv <- read_xpt("datasets/SDTM/sv.xpt")
 ae <- read_xpt("datasets/SDTM/ae.xpt")
-
-# Get the specifications for the dataset we are currently building
-adsl_spec <- metacore %>%
-  select_dataset("ADSL")
-
-# Pull together all the predecessor variables
-adsl_pred <- build_from_derived(adsl_spec,
-                                ds_list = list("dm" = dm),
-                                keep = TRUE) %>%
-  filter(ARMCD %in% c("A", "P"))
-
-
-# Codes and Decodes ----
-adsl_decode <- adsl_pred %>%
-  create_var_from_codelist(adsl_spec, SEX, SEXN) %>%
-  create_var_from_codelist(adsl_spec, ETHNIC, ETHNICN) %>%
-  create_var_from_codelist(adsl_spec, ARMCD, TRT01PN) %>%
-  create_var_from_codelist(adsl_spec, ACTARMCD, TRT01AN) %>%
-  create_var_from_codelist(adsl_spec, ARMCD, TRT01P) %>%
-  create_var_from_codelist(adsl_spec, ACTARMCD, TRT01A)
-
 
 # Baseline Characteristics ----
 adsl_bl <- adsl_decode %>%
