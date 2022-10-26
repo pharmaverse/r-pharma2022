@@ -5,6 +5,7 @@ library(tidyverse)
 library(admiral)
 library(haven)
 library(metatools)
+library(xportr)
 
 # Read in the metadata 
 metacore<- spec_to_metacore("specs/specs.xlsx", where_sep_sheet = FALSE)
@@ -53,3 +54,10 @@ adsl <- adsl_decode %>%
   create_cat_var(adsl_spec, AGE, AGEGR1, AGEGR1N)
 
 check_variables(adsl, adsl_spec)
+
+# We are going to write this out to an XPT for Thomas to add to 
+adsl %>% 
+  xportr_type(adsl_spec, "ADSL") %>%
+  xportr_length(adsl_spec, "ADSL") %>%
+  xportr_write("datasets/ADAM/preadsl.xpt", 
+               label = "Subject-Level Analysis Dataset")

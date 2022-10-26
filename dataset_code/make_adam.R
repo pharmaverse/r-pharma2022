@@ -173,8 +173,8 @@ adae <- build_from_derived(
 ) %>%
   filter(AEBODSYS != "") %>%
   mutate(
-    ASTDT = floor_date(AESTDTC, "day"),
-    AENDT = floor_date(AEENDTC, "day")
+    ASTDT = as.Date(AESTDTC),
+    AENDT = as.Date(AEENDTC)
   )
 
 adae <- adae %>%
