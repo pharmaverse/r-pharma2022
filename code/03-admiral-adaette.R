@@ -33,14 +33,14 @@ any_ae_src <- event_source(
   )
 )
 
-nausea_src <- event_source(
+cardiac_src <- event_source(
   dataset_name = "adae",
-  filter = AEDECOD == "NAUSEA",
+  filter = AEBODSYS == "CARDIAC DISORDERS",
   date = ASTDT,
   set_values_to = vars(
-    EVNTDESC = AEDECOD,
+    EVNTDESC = AEBODSYS,
     SRCDOM = "ADAE",
-    SRCVAR = "AEDECOD"
+    SRCVAR = "AEBODSYS"
   )
 )
 
@@ -61,16 +61,22 @@ adaette_any_ae <- derive_param_tte(
   start_date = TRTSDT,
   event_conditions = list(any_ae_src),
   censor_conditions = list(lstalv_censor),
-  set_values_to = NULL
+  set_values_to = vars(
+    PARAMCD = "ANYAETTE",
+    PARAM = "Time to any first adverse event"
+  )
 )
 
-adaette_nausea <- derive_param_tte(
+adaette_cardiac <- derive_param_tte(
   dataset_adsl = adsl,
   source_datasets = list(adae = adae, adsl = adsl),
   start_date = TRTSDT,
-  event_conditions = list(nausea_src),
+  event_conditions = list(cardiac_src),
   censor_conditions = list(lstalv_censor),
-  set_values_to = NULL
+  set_values_to = vars(
+    PARAMCD = "CARDAETTE",
+    PARAM = "Time to first cardiac adverse event"
+  )
 )
 
 adaette_aval <- bind_rows(adaette_any_ae, adaette_nausea) %>%
