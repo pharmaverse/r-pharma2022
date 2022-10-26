@@ -31,7 +31,8 @@ any_ae_src <- event_source(
   set_values_to = vars(
     EVNTDESC = "Any Adverse Event",
     SRCDOM = "ADAE",
-    SRCVAR = "AEDECOD"
+    SRCVAR = "AEDECOD",
+    SRCSEQ = AESEQ
   )
 )
 
@@ -42,7 +43,8 @@ cardiac_src <- event_source(
   set_values_to = vars(
     EVNTDESC = AEBODSYS,
     SRCDOM = "ADAE",
-    SRCVAR = "AEBODSYS"
+    SRCVAR = "AEBODSYS",
+    SRCSEQ = AESEQ
   )
 )
 
