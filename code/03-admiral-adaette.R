@@ -3,7 +3,7 @@ library(metacore)
 library(dplyr)
 library(haven)
 
-metacore <- spec_to_metacore("specs/specs.xlsx", where_sep_sheet = FALSE)
+metacore <- spec_to_metacore("specs/specs.xlsx", quiet = TRUE, where_sep_sheet = FALSE)
 
 adaette_spec <- metacore %>%
   select_dataset("ADAETTE")
