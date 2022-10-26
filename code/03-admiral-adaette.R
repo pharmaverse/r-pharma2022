@@ -3,6 +3,7 @@ library(metacore)
 library(metatools)
 library(dplyr)
 library(haven)
+library(xportr)
 
 metacore <- spec_to_metacore("specs/specs.xlsx", quiet = TRUE, where_sep_sheet = FALSE)
 
