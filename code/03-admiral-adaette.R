@@ -11,6 +11,8 @@ adaette_spec <- metacore %>%
 adsl <- read_xpt("datasets/ADAM/adsl.xpt")
 adae <- read_xpt("datasets/ADAM/adae.xpt")
 
+adsl_pred <- build_from_derived(adaette_spec, list(adsl = adsl))
+
 lstalv_censor <- censor_source(
   "adsl",
   date = LSTALVDT,
@@ -78,7 +80,9 @@ adaette_aval <- bind_rows(adaette_any_ae, adaette_nausea) %>%
     start_date = STARTDT,
     end_date = ADT,
     out_unit = "days"
-  )
+  ) %>%
+  derive_vars_dy(reference_date = STARTDT, source_vars = vars(ADT)) %>%
+  derive_vars_merged(adsl_pred, by_vars = vars(STUDYID, USUBJID))
 
 adaette <- adaette_aval %>%
   order_cols(adaette_spec) %>%
