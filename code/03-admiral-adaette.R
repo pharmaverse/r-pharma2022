@@ -44,17 +44,6 @@ cardiac_src <- event_source(
   )
 )
 
-protocol_event_src <- event_source(
-  dataset_name = "adae",
-  filter = AESPROT == "Y",
-  date = ASTDT,
-  set_values_to = vars(
-    EVNTDESC = AEDECOD,
-    SRCDOM = "ADAE",
-    SRCVAR = "AEDECOD"
-  )
-)
-
 adaette_any_ae <- derive_param_tte(
   dataset_adsl = adsl,
   source_datasets = list(adae = adae, adsl = adsl),
