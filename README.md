@@ -1,56 +1,67 @@
-# r-pharma2022
-The material for the R/Pharma workshop about end to end clinical trials 
+---
+editor_options: 
+  markdown: 
+    wrap: 72
+---
 
-Current Outline 
+# R/pharma 2022
 
-Concepts/packages to cover: 
-•	Metacore 
-•	Metatools 
-•	Xportr 
-•	Admiral 
-•	Tplyr 
-•	Tfrmt 
+\-\-\-\--
 
+🗓️: October 31 🎃 and November 1, 2022
 
+⏰: 10:00-14:00 ET
 
-Day 1: 
-- Hour 1 
-  -	Background – 15 min – Ellis 
-  -	Study information – 15 min – Ellis  
-  -	Metacore/metatools – 20 min – Christina 01
-    -	Follow-along 
--	Hour 2 
-  -	Admiral 
-  -	Follow-along 02/03
-  -	Include writing out with xportr 
--	Hour 3 
-  -	15 min break 
-  -	Exercise to build an ADaM 04
--	Hour 4 – ARDs, but very fast and seceret 
-  -	Tplyr – Christina 
-  -	Follow-along - make demog summaries 05
--	Homework exercise – Christina 
-  - make ae ard 06
+❓: [To ask questions](https://app.sli.do/event/83gAqCeoPVpeMyFoEVeDZG)
 
-Day 2: 
-- Hour 1 
-  -	Intro to ARDs – Christina 
-    -	Value of proposition 
-  -	Review of homework - Ellis 
--	Hour 2
-  -	Tfrmt – Christina 
-  -	Follow-along - basic table 08 + demog table? 09
-  -	Use a template to create some mocks  
--	Hour 3
-  -	15 min break 
-  -	Tfmrt exercise 10
-    -	Christina presents the question 
-    -	Ellis do the answers 
--	Hour 4
-  -	Art of the possible -30 min – Ellis 
-  -	Follow-along 
-    - Mocks for demog
-  -	Close out review of all the things, - 30 min 
-  -	Next steps 
-  -	How to get involved etc… 
+\-\-\-\--
 
+The material for the R/Pharma workshop about end to end clinical trial
+reporting.
+
+In this 2-day workshop you will be working with the Tidyverse and the
+first generation of Pharmaverse tools in order to \'deliver\' typical
+clinical trial displays. Going from SDTM all the way through to table
+generation. Specifically, we will walk through an end-to-end focusing on
+a sample of demographic, safety and efficacy summaries. We will also be
+using analysis results datasets (ARDs), which are the newly proposed
+CDSIC data standard, showing how they can be in cooperated into a
+clinical workflow.
+
+### Packages that are covered: 
+
+![metacore
+hex](https://github.com/atorus-research/metacore/raw/main/man/figures/metacore.PNG){width="30"}
+{metacore} ![metatools
+hex](https://github.com/pharmaverse/metatools/raw/main/man/figures/metatools.png){width="30"}
+{metatools} ![xportr
+hex](https://github.com/atorus-research/xportr/raw/main/man/figures/logo.png){width="30"}
+{xportr} ![admiral
+hex](https://github.com/pharmaverse/admiral/raw/main/man/figures/logo.png){width="30"}
+{admiral} ![Tplyr
+hex](https://atorus-research.github.io/Tplyr/logo.png){width="30"}
+{Tplyr}![tfrmt
+hex](https://github.com/GSK-Biostatistics/tfrmt/raw/main/man/figures/tfrmt.png){width="40"}{tfrmt}
+
+### Outline
+
+Day 1: How to build an ADaM dataset with the pharmaverse
+
+-   Background
+
+-   Leveraging metadata for ADaM automation with {metacore} and
+    {metatools}
+
+-   Creating variables with {admiral}
+
+-   Summarizing ADaMs with {Tplyr}
+
+Day 2: ARDs to Tables
+
+-   Introduction to ARDs
+
+-   Leveraging metadata to format tables with {tfrmt}
+
+-   Advanced table formatting
+
+-   Review of material and how to get involved

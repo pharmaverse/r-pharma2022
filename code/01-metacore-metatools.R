@@ -55,7 +55,7 @@ adsl <- adsl_decode %>%
 
 check_variables(adsl, adsl_spec)
 
- # We are going to write this out to an XPT for Thomas to add to 
+# We are going to write this out to an XPT for Thomas to add to 
 adsl %>% 
   xportr_type(adsl_spec, "ADSL") %>%
   xportr_length(adsl_spec, "ADSL") %>%
