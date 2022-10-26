@@ -259,6 +259,7 @@ ae <- dm %>%
     AEENDY = if_else(AEOUT == "NOT RECOVERED/NOT RESOLVED", NA_integer_, AEENDY),
     AEENDTC = as.character(RFSTDTC + days(AEENDY)),
     AESDTH = "N",
+    AEDECOD = AETERM,
     DOMAIN = "AE"
   ) %>%
   group_by(USUBJID) %>%

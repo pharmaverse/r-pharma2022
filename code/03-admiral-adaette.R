@@ -29,18 +29,18 @@ any_ae_src <- event_source(
   set_values_to = vars(
     EVNTDESC = "Any Adverse Event",
     SRCDOM = "ADAE",
-    SRCVAR = "AETERM"
+    SRCVAR = "AEDECOD"
   )
 )
 
 nausea_src <- event_source(
   dataset_name = "adae",
-  filter = AETERM == "NAUSEA",
+  filter = AEDECOD == "NAUSEA",
   date = ASTDT,
   set_values_to = vars(
-    EVNTDESC = AETERM,
+    EVNTDESC = AEDECOD,
     SRCDOM = "ADAE",
-    SRCVAR = "AETERM"
+    SRCVAR = "AEDECOD"
   )
 )
 
@@ -49,9 +49,9 @@ protocol_event_src <- event_source(
   filter = AESPROT == "Y",
   date = ASTDT,
   set_values_to = vars(
-    EVNTDESC = AETERM,
+    EVNTDESC = AEDECOD,
     SRCDOM = "ADAE",
-    SRCVAR = "AETERM"
+    SRCVAR = "AEDECOD"
   )
 )
 
