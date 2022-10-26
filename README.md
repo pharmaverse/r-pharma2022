@@ -10,9 +10,9 @@
 
 \-\-\-\--
 
-The material for the R/Pharma workshop about end to end clinical trial reporting.
+The material for the R/Pharma workshop about end to end clinical trial reporting in R.
 
-In this 2-day workshop you will be working with the Tidyverse and the first generation of Pharmaverse tools in order to 'deliver' typical clinical trial displays. Going from SDTM all the way through to table generation. Specifically, we will walk through an end-to-end focusing on a sample of demographic, safety and efficacy summaries. We will also be using analysis results datasets (ARDs), which are the newly proposed CDSIC data standard, showing how they can be in cooperated into a clinical workflow.
+In this 2-day workshop you will be working with the tidyverse and the first generation of pharmaverse tools in order to 'deliver' typical clinical trial displays. Going from SDTM all the way through to table generation. Specifically, we will walk through an end-to-end example focusing on a sample of demographic, safety and efficacy summaries. We will also be using analysis results datasets (ARDs), which are the newly proposed CDSIC data standard, showing how they can be in cooperated into a clinical workflow.
 
 ### Packages that are covered:
 
@@ -30,7 +30,7 @@ Day 1: How to build an ADaM dataset with the pharmaverse
 
 -   Leveraging metadata for ADaM automation with {metacore} and {metatools}
 
--   Creating variables with {admiral}
+-   Deriving variables and parameters with {admiral}
 
 -   Summarizing ADaMs with {Tplyr}
 
