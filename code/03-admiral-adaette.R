@@ -1,14 +1,15 @@
 library(admiral)
 library(metacore)
 library(dplyr)
+library(haven)
 
 metacore <- spec_to_metacore("specs/specs.xlsx", where_sep_sheet = FALSE)
 
-adsl <- haven::read_xpt("datasets/ADAM/adsl.xpt")
-adae <- haven::read_xpt("datasets/ADAM/adae.xpt")
-
 adaette_spec <- metacore %>%
   select_dataset("ADAETTE")
+
+adsl <- read_xpt("datasets/ADAM/adsl.xpt")
+adae <- read_xpt("datasets/ADAM/adae.xpt")
 
 lstalv_censor <- censor_source(
   "adsl",
