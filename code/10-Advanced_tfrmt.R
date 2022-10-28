@@ -419,7 +419,7 @@ model_ests <- tibble(
 # Construct model contrasts section of table
 model_contrasts <- tibble(
     model_results_category = c("Contrast"),
-    measure = c("Difference","95% CI [high, low]","95% CI [high, low]","p-value"),
+    measure = c("Difference","95% CI [low, high]","95% CI [low, high]","p-value"),
     param = c("estimate","conf.low","conf.high","p.value"),
     ord1 = c(3,4,4,5)
   ) %>%
