@@ -54,7 +54,7 @@ adsl_ex <- adsl_bl %>%
     order = vars(EXSTDT, EXSEQ),
     new_vars = vars(TRTSDT = EXSTDT),
     mode = "first",
-    filter_add = EXDOSE > 0 | (EXDOSE == 0 & str_detect(EXTRT, "PLACEBO"))
+    filter_add = EXDOSE > 0 | (EXDOSE == 0 & str_detect(EXTRT, "Placebo"))
   ) %>%
   derive_vars_merged(
     dataset_add = ex_dt,
@@ -62,7 +62,7 @@ adsl_ex <- adsl_bl %>%
     order = vars(EXENDT, EXSEQ),
     new_vars = vars(TRTEDT = EXENDT),
     mode = "last",
-    filter_add = EXDOSE > 0 | (EXDOSE == 0 & str_detect(EXTRT, "PLACEBO"))
+    filter_add = EXDOSE > 0 | (EXDOSE == 0 & str_detect(EXTRT, "Placebo"))
   )
 
 

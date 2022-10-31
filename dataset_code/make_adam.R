@@ -57,7 +57,7 @@ adsl_ex <- adsl_bl %>%
     dataset_add = ex,
     filter_add = (EXDOSE > 0 |
       (EXDOSE == 0 &
-        str_detect(EXTRT, "PLACEBO"))) & nchar(EXSTDTC) >= 10,
+        str_detect(EXTRT, "Placebo"))) & nchar(EXSTDTC) >= 10,
     new_vars_prefix = "TRTS",
     dtc = EXSTDTC,
     order = vars(TRTSDT, EXSEQ),
@@ -69,7 +69,7 @@ adsl_ex <- adsl_bl %>%
     dataset_add = ex,
     filter_add = (EXDOSE > 0 |
       (EXDOSE == 0 &
-        str_detect(EXTRT, "PLACEBO"))) & nchar(EXENDTC) >= 10,
+        str_detect(EXTRT, "Placebo"))) & nchar(EXENDTC) >= 10,
     new_vars_prefix = "TRTE",
     dtc = EXENDTC,
     order = vars(EXSEQ),
