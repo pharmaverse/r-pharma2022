@@ -16,7 +16,7 @@ adae <- read_xpt("datasets/ADAM/adae.xpt")
 adsl_pred <- build_from_derived(adaette_spec, list(adsl = adsl))
 
 lstalv_censor <- censor_source(
-  "adsl",
+  dataset_name = "adsl",
   date = LSTALVDT,
   set_values_to = vars(
     EVNTDESC = "Last Known Alive Date",

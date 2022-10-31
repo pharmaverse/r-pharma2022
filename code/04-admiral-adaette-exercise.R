@@ -9,7 +9,7 @@ adaette <- read_xpt("datasets/ADAM/adaette.xpt")
 # A)
 # Derive the time to first protocol specified event (ADAE.AESPORT)
 lstalv_censor <- censor_source(
-  "adsl",
+  dataset_name = "adsl",
   date = LSTALVDT,
   set_values_to = vars(
     EVNTDESC = "Last Known Alive Date",
