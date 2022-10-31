@@ -256,6 +256,7 @@ ae <- dm %>%
     AEOUT = sample(c("NOT RECOVERED/NOT RESOLVED", "RECOVERED/RESOLVED"), nrow(.),
       replace = TRUE, prob = c(0.6, 0.4)
     ),
+    AESER = sample(c("Y", "N"), nrow(.), replace = TRUE, prob = c(0.25, 0.75)),
     AEENDY = if_else(AEOUT == "NOT RECOVERED/NOT RESOLVED", NA_integer_, AEENDY),
     AEENDTC = as.character(RFSTDTC + days(AEENDY)),
     AESDTH = "N",
