@@ -6,8 +6,6 @@ library(haven)
 library(metatools)
 library(xportr)
 
-source("code/01-metacore-metatools.R")
-
 # Read in the metadata ----
 metacore <- spec_to_metacore("specs/specs.xlsx", quiet = TRUE, where_sep_sheet = FALSE)
 
@@ -21,9 +19,10 @@ vs <- read_xpt("datasets/SDTM/vs.xpt")
 ex <- read_xpt("datasets/SDTM/ex.xpt")
 sv <- read_xpt("datasets/SDTM/sv.xpt")
 ae <- read_xpt("datasets/SDTM/ae.xpt")
+pre_adsl <- read_xpt("datasets/ADAM/preadsl.xpt")
 
 # Baseline Characteristics ----
-adsl_bl <- adsl_decode %>%
+adsl_bl <- pre_adsl %>%
   derive_vars_transposed(
     select(vs, USUBJID, VSTESTCD, VSSTRESN, VSBLFL),
     by_vars = vars(USUBJID),
